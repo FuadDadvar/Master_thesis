@@ -1,10 +1,10 @@
 import torch
-from VAE_ import VAE  # Replace with your actual import
+from VAE_ import VAE 
 
 # Initialize your model with the required dimensions
-input_dim = 64  # replace with actual input dimension
-hidden_dim = 128  # replace with actual hidden dimension
-latent_dim = 64  # replace with actual latent dimension
+input_dim = 64  
+hidden_dim = 128
+latent_dim = 64 
 
 model = VAE(input_dim=input_dim, hidden_dim=hidden_dim, latent_dim=latent_dim)
 

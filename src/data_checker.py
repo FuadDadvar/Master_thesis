@@ -2,6 +2,7 @@ import h5py
 import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
+import pandas as pd
 
 #h5_file_path = '/Users/fuaddadvar/MSc/data/encoded_sequences.h5'
 #batch_name = 'encoded_sequences_batch_10'  # replace with the batch you want to visualize
@@ -25,27 +26,21 @@ import matplotlib.pyplot as plt
 # plt.savefig('Amino_batch_10.pdf')
 # plt.show()
 
-h5_output_path = '/Users/fuaddadvar/MSc/data/encoded_sequences.h5'
+# h5_output_path = '/Users/fuaddadvar/MSc/data/encoded_sequences.h5'
 
-with h5py.File(h5_output_path, 'r') as f:
-    for batch_num, dataset_name in enumerate(f.keys()):
-        data = f[dataset_name][()]  # Read the batch data        
-        # Check different sequences in a batch
-        print(f"First sequence of batch {batch_num}: {data[0]}")
-        print(f"Second sequence of batch {batch_num}: {data[1]}")
+# with h5py.File(h5_output_path, 'r') as f:
+#     for batch_num, dataset_name in enumerate(f.keys()):
+#         data = f[dataset_name][()]  # Read the batch data        
         
-        # Check the last sequence of each batch
-        print(f"Last sequence of batch {batch_num}: {data[-1]}")
+#         # Printing the shape and dimensions of the entire data batch
+#         print(f"Shape of batch {batch_num}: {data.shape}")
+#         print(f"Number of dimensions of batch {batch_num}: {data.ndim}")
         
-        # Check the sum of one-hot encoded sequences
-        sum_of_sequences = np.sum(data, axis=1)
-        print(f"Sum of sequences in batch {batch_num}: {sum_of_sequences}")
-        
-        # Check sequence lengths
-        sequence_lengths = np.sum(data, axis=(1, 2))
-        print(f"Sequence lengths in batch {batch_num}: {sequence_lengths}")
-
-        # Assuming the second dimension represents the sequence, and the first sequence is at index 0
-        first_sequence = data[0]
-        
-        print(f"First sequence of batch {batch_num}: {first_sequence}")
+#         # If you want to print the shape and dimensions of individual sequences in the batch, you can do the following:
+#         for seq_num, sequence in enumerate(data):
+#             print(f"Shape of sequence {seq_num} in batch {batch_num}: {sequence.shape}")
+#             print(f"Number of dimensions of sequence {seq_num} in batch {batch_num}: {sequence.ndim}")
+            
+#         # If you want to limit the number of printed sequences to avoid overwhelming output, you can break after a few sequences
+#         if batch_num >= 2:  # Adjust as needed
+#             break

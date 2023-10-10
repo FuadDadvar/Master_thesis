@@ -25,7 +25,16 @@ Functions:
 ALL_CHARS = 'ACDEFGHIKLMNPQRSTVWY0'  # 20 amino acids + '0'
 
 def center_pad_sequence(sequence: str, target_length: int = 30) -> str:
-    """Insert zeros in the center of the sequence to achieve the desired target length."""
+    """
+    Pads a sequence by inserting zeros in the center to achieve the desired target length.
+    
+    Args:
+    - sequence (str): The original sequence to be padded.
+    - target_length (int, optional): The desired length of the padded sequence. Default is 30.
+
+    Returns:
+    - str: The padded sequence with zeros added in the center.
+    """
     missing_length = target_length - len(sequence)
     split_point = len(sequence) // 2
     left_sequence = sequence[:split_point]
@@ -33,14 +42,32 @@ def center_pad_sequence(sequence: str, target_length: int = 30) -> str:
     return left_sequence + '0' * missing_length + right_sequence
 
 def read_and_pad_sequences(file_path: str) -> List[str]:
-    """Read sequences from file, pad them, and return as a list."""
+    """
+    Reads sequences from a given file, pads them using center padding, and returns them as a list.
+    
+    Args:
+    - file_path (str): Path to the file containing the sequences.
+
+    Returns:
+    - List[str]: A list of padded sequences.
+    """
     df = pd.read_csv(file_path, header=None, sep='\t')
     sequences = df[1].apply(center_pad_sequence).tolist()
     logger.info(f'Read {len(sequences)} sequences from the CSV file')
     return sequences
 
 def one_hot_encode(sequence: str) -> torch.Tensor:
-    """Returns a one-hot encoded torch tensor for a given amino acid sequence."""
+    """
+    One-hot encodes a given amino acid sequence into a torch tensor.
+    
+    The encoding uses the defined set of characters in ALL_CHARS, including amino acids and padding character.
+
+    Args:
+    - sequence (str): The amino acid sequence to be encoded.
+
+    Returns:
+    - torch.Tensor: The one-hot encoded representation of the sequence.
+    """
     encoding = torch.zeros(len(sequence), len(ALL_CHARS))
     for i, amino_acid in enumerate(sequence):
         if amino_acid in ALL_CHARS:
@@ -49,7 +76,21 @@ def one_hot_encode(sequence: str) -> torch.Tensor:
     return encoding
 
 def batch_encode_and_save(sequences: List[str], h5_output_path: str, batch_size: int = 100000):
-    """Batch processes sequences, one-hot encodes them and saves them to an HDF5 file."""
+    """
+    Batch processes sequences, one-hot encodes each sequence, and saves the encoded sequences to an HDF5 file.
+    
+    The sequences are processed in batches to manage memory usage. Each batch of encoded sequences is saved
+    as a dataset in the HDF5 file.
+
+    Args:
+    - sequences (List[str]): A list of sequences to be one-hot encoded.
+    - h5_output_path (str): Path where the encoded sequences will be saved in HDF5 format.
+    - batch_size (int, optional): The number of sequences to process in each batch. Default is 100,000.
+
+    Returns:
+    - None
+    
+    """
     num_batches = len(sequences) // batch_size + 1
     
     for batch_num in range(num_batches):
@@ -158,61 +199,3 @@ if __name__ == '__main__':
 
 
 
-
-
-
-
-# AMINO_ACIDS = string.ascii_uppercase + string.digits + string.punctuation + string.whitespace
-
-# df = pd.read_csv('/Users/fuaddadvar/MSc/simairr_output/baseline_repertoires/rep_1.tsv', header=None, names = ['sequence'])
-# sequences: List[str] = df['sequence'].tolist()
-# logger.info(f'Read {len(sequences)} sequences from the CSV file')
-
-# max_seq_length = max(map(len, sequences))
-
-# def one_hot_encode(sequence: str) -> torch.Tensor:
-#     """
-#     One-hot encode a TCR beta amino acid sequence using PyTorch.
-
-#     Given an amino acid sequence, this function returns its one-hot encoded representation 
-#     as a torch tensor. Each amino acid is represented as a unique binary vector.
-
-#     Parameters:
-#     - sequence (str): The amino acid sequence to be encoded.
-
-#     Returns:
-#     - torch.Tensor: The one-hot encoded representation of the sequence.
-#     """
-#     sequence = sequence.ljust(max_seq_length, '0')  # Here, '0' is the padding character. You can choose another if '0' is already in your sequences.
-
-#     encoding = torch.zeros(len(sequence), len(AMINO_ACIDS))
-#     for i, amino_acids in enumerate(sequence):
-#         if amino_acids in AMINO_ACIDS:
-#             position = AMINO_ACIDS.index(amino_acids)
-#             encoding[i, position] = 1
-#     return encoding
-
-# logger.info("Starting encoding sequences")
-
-# BATCH_SIZE = 10000  # Adjust this based on your available memory
-
-# num_batches = len(sequences) // BATCH_SIZE + 1
-# h5_output_path = '/Users/fuaddadvar/MSc/data/encoded_sequences.h5'
-
-# for batch_num in range(num_batches):
-#     start_idx = batch_num * BATCH_SIZE
-#     end_idx = start_idx + BATCH_SIZE
-    
-#     batch_sequences = sequences[start_idx:end_idx]
-#     encoded_sequences = [one_hot_encode(seq) for seq in batch_sequences]
-    
-#     # Save the 3D array to an HDF5 file
-#     with h5py.File(h5_output_path, 'a') as f:
-#         dataset_name = f'encoded_sequences_batch_{batch_num}'
-#         if dataset_name not in f:
-#             f.create_dataset(dataset_name, data=torch.stack(encoded_sequences).numpy(), compression="gzip")
-#             logger.info(f"Saved encoded sequences of batch {batch_num} to {h5_output_path}")
-#         else:
-#             logger.warning(f"Dataset {dataset_name} already exists in {h5_output_path}. Skipping this batch.")
-
-# logger.success("Done encoding sequences")
